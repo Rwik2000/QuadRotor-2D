@@ -24,7 +24,7 @@ X_dot = [y_dot; z_dot; phi_dot; 0; -g; 0] + [0 0; 0 0; 0 0; (-1/m)*sin(phi) 0; (
 clc;
 clear;
 
-syms y(t) z(t) phi(t)
+syms y(t) z(t) phi(t) T Y
 
 g = 9.8;
 m= 0.18; % mass in kg
@@ -51,10 +51,12 @@ cond2 = [z(0)==0, Dz(0)==0];
 cond3 = [phi(0)==0, Dphi(0)==0];
 conds = [cond1; cond2; cond3];
 
-S = dsolve(odes, conds)
-% [ySol(t), zSol(t), phiSol(t)] = dsolve(odes,conds)
+[VF, Sbs] = odeToVectorField(odes);
+DEFcn = matlabFunction(VF,'Vars',{T,Y});
+tspan = [0,10];
+[T,Y] = ode45(DEFcn, tspan, [0 0 0 0 0 0]);
+plot(T,Y)
 
-% [ySol(t), zSol(t), phiSol(t)] = dsolve(odes)
 
 
 
