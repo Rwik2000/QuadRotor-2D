@@ -59,6 +59,7 @@ dsolve(odes, conds);
 % plot(T,Y)
 
 %% savage (step response done)
+% Non  Linear system of equation
 clc;
 clear;
 
@@ -75,7 +76,7 @@ u1 = F2 + F4;
 u2 = (F2 - F4)*L;
 
 f = @(t,x)[x(2);-u1*sin(x(5))/m;x(4);-g + u1*cos(x(5))/m; x(6);u2/I_xx];
-[t xa] = ode45(f, [0,10], [0 0 0 0 0 0]);
+[t, xa] = ode45(f, [0,10], [0 0 0 0 0 0]);
 
 plot(t,xa(:, 1))
 hold on;
@@ -84,3 +85,44 @@ hold on;
 plot(t,xa(:, 5))
 hold on;
 legend('y','z','phi')
+%% Linearizing the above system and finding the transfer function:
+clc;
+clear;
+
+syms y(t) z(t) phi(t) T Y
+
+g = 9.8;
+m= 0.18; % mass in kg
+I_xx = 2.5e-4; %moment of inertia in x dir
+F2 = 1;
+F4 = 1;
+L = 0.086;
+
+% State space eqution : x' = Ax + Bu ; y = Cx + Du
+A = [0 1 0 0 0 0; 
+     0 0 0 0 -g 0; 
+     0 0 0 1 0 0; 
+     0 0 0 0 0 0; 
+     0 0 0 0 0 1; 
+     0 0 0 0 0 0];
+ 
+B = [0 0; 
+     0 0; 
+     0 0; 
+     0 0; 
+     0 0; 
+     0 1/I_xx;];
+
+ C = [1 0 0 0 0 0; 
+      0 0 1 0 0 0; 
+      0 0 0 0 1 0];
+  
+ D =[0 0; 
+     0 0; 
+     0 0];%zero matrix shape: 3x2
+ 
+ sys = ss(A,B,C,D);
+ sys_as_tf = tf(sys)
+ 
+ 
+ 
