@@ -114,19 +114,19 @@ B = [0 0;
      0 0; 
      0 1/I_xx;];
 
- C = [1 0 0 0 0 0; 
+C = [1 0 0 0 0 0; 
       0 0 1 0 0 0; 
       0 0 0 0 1 0];
   
- D =[0 0; 
+D =[0 0; 
      0 0; 
      0 0];%zero matrix shape: 3x2
 
-Phi=inv(s*eye(6)-A);
-H=C*Phi*B+D
-[num12, den12] = numden(H(1,2))
-C = coeffs(den12, s, 'All')
-r = roots(C)
+% Phi=inv(s*eye(6)-A);
+% H=C*Phi*B+D
+% [num12, den12] = numden(H(1,2))
+% C = coeffs(den12, s, 'All')
+% r = roots(C)
 
  
 % direct with numerical values
@@ -136,5 +136,24 @@ r = roots(C)
 %  P = pole(sys_as_tf);
 %  Z = tzero(sys_as_tf);
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
- 
+Phi=inv(s*eye(6)-A);
+H=C*Phi*B+D
+
+pole = [];
+zero = [];
+for i=1:2
+    for j=1:3
+
+        [num12, den12] = numden(H(j,i));
+        Cd = coeffs(den12, s, 'All');
+        Cn = coeffs(num12, s, 'All');
+        rd = roots(Cd);
+        rn = roots(Cn);
+        pole = [pole; rd];
+        zero = [zero; rn];
+        
+    end
+end
+
+pole
+zero
