@@ -90,10 +90,11 @@ clc;
 clear;
 
 syms y(t) z(t) phi(t) T Y
+syms I_xx g s
 
-g = 9.8;
+% g = 9.8;
 m= 0.18; % mass in kg
-I_xx = 2.5e-4; %moment of inertia in x dir
+% I_xx = 2.5e-4; %moment of inertia in x dir
 F2 = 1;
 F4 = 1;
 L = 0.086;
@@ -120,9 +121,20 @@ B = [0 0;
  D =[0 0; 
      0 0; 
      0 0];%zero matrix shape: 3x2
+
+Phi=inv(s*eye(6)-A);
+H=C*Phi*B+D
+[num12, den12] = numden(H(1,2))
+C = coeffs(den12, s, 'All')
+r = roots(C)
+
  
- sys = ss(A,B,C,D);
- sys_as_tf = tf(sys)
- 
+% direct with numerical values
+%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ %sys = ss(A,B,C,D);
+ %  sys_as_tf = tf(sys);
+%  P = pole(sys_as_tf);
+%  Z = tzero(sys_as_tf);
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
  
