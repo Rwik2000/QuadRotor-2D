@@ -90,10 +90,10 @@ clc;
 clear;
 
 syms y(t) z(t) phi(t) T Y
-syms I_xx g s
+syms I_xx g s m
 
 % g = 9.8;
-m= 0.18; % mass in kg
+% m= 0.18; % mass in kg
 % I_xx = 2.5e-4; %moment of inertia in x dir
 F2 = 1;
 F4 = 1;
@@ -110,7 +110,7 @@ A = [0 1 0 0 0 0;
 B = [0 0; 
      0 0; 
      0 0; 
-     0 0; 
+     0 1/m; 
      0 0; 
      0 1/I_xx;];
 
