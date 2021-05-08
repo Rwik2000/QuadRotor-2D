@@ -60,5 +60,5 @@ F2 = ones(length(t),1);
 
 % F1 = 1;
 % F2 = 1;
-lsim(sys,[F1 F2],t)
+lsim(sys,[F1 F2],t);
 
