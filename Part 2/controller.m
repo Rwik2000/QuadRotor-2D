@@ -1,8 +1,8 @@
 clc;
 clear;
 
-kp = [10, 10, 0.01];
-kd = [12, 10, 0];
+kp = [100, 200, 0.01];
+kd = [20, 35, 0];
 ki = [1, 0.01, 0];
 
 del_t = 0.01;
@@ -81,6 +81,14 @@ for i = 2:length(t)-1
         check_z = 2;
     end
     
+    if y(i+1) >  0.1*(y_des - y_init) && check_y == 0
+        rise_time_y = t(i+1);
+        check_y = 1;
+    elseif y(i+1) >  0.9*(y_des - y_init) && check_y == 1
+        rise_time_y = t(i+1)-rise_time_y;
+        check_y = 2;
+    end
+    
     phidot = phidot + phid_dot*del_t;
 % 
 %     xlim([0 60])
@@ -89,7 +97,11 @@ for i = 2:length(t)-1
       
 end
 
+per_OS_z = ((max(z)- z_des)/z_des)*100
 rise_time_z
+
+per_OS_y = ((max(y)- y_des)/y_des)*100
+rise_time_y
 figure(1)
 plot(t, y)
 hold on;
@@ -98,6 +110,6 @@ hold on;
 plot(t, phi)
 legend('y','z','phi')
 grid on
-figure(2)
-plot(y,z)
-grid on
+% figure(2)
+% plot(y,z)
+% grid on
