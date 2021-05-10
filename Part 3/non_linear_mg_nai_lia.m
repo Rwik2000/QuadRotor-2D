@@ -1,11 +1,11 @@
 clc;
 clear;
 
-kp = [100, 200, 0.01];
-kd = [20, 35, 0];
-ki = [1, 0.01, 0];
+kp = [0, 20, 0];
+kd = [0, 0, 0];
+% ki = [1, 0.01, 0];
 
-del_t = 0.01;
+del_t = 0.001;
 g = 9.8;
 L = 0.086;
 I_xx = 2.5e-4;
@@ -38,14 +38,11 @@ length(t);
 prev_z = 0;
 prev_phi_c = 0;
 
-figure(1)
-legend('y','z','phi')
-grid on
-
 rise_time_y = 0;
 rise_time_z = 0;
 check_y = 0;
 check_z = 0;
+
 for i = 2:length(t)-1
     
     del_z = z(i) - z(i-1);
@@ -53,14 +50,14 @@ for i = 2:length(t)-1
     u1cosphi = m*(g + 0 +kd(2)*(0 - del_z/del_t) + kp(2)*(z_des - z(i)));
     u1sinphi = -m*(0 + kd(1)*(0 - del_y/del_t) + kp(1)*(y_des - y(i)));   
     
-    u1 = (u1cosphi^2+u1sinphi^2)^0.5;
+    u1 = sqrt(u1cosphi^2+u1sinphi^2);
     phi_c = atan(u1sinphi/u1cosphi);
     
-    del_phidot = (phi_c - phi(i-1))/del_t - (phi(i)-phi(i-1))/del_t;
+    del_phidot = (phi_c - prev_phi_c)/del_t - (phi(i)-phi(i-1))/del_t;
     u2 = I_xx*(0 + kd(3)*(del_phidot) + kp(3)*(phi_c - phi(i)));
     
-    yd_dot = -(u1/m)*sin(phi_c);
-    zd_dot = -g +u1*cos(phi_c)/m;
+    yd_dot = -(u1/m)*sin(phi(i));
+    zd_dot = -g +u1*cos(phi(i))/m;
     phid_dot = u2/I_xx;
     
     y(i+1) = y(i) + ydot*del_t + 0.5*yd_dot*(del_t^2);
@@ -69,7 +66,6 @@ for i = 2:length(t)-1
     z(i+1) = z(i) + zdot*del_t + 0.5*zd_dot*(del_t^2);
     zdot = zdot + zd_dot*del_t;
    
-    
     phi(i+1) = phi(i) + phidot*del_t + 0.5*phid_dot*(del_t^2);
     phidot = phidot + phid_dot*del_t;
     
@@ -92,8 +88,6 @@ for i = 2:length(t)-1
         rise_time_y = t(i+1)-rise_time_y;
         check_y = 2;
     end
-    
-    phidot = phidot + phid_dot*del_t;
 % 
 %     xlim([0 60])
 %     ylim([-10 20])
@@ -108,6 +102,7 @@ per_OS_y = ((max(y)- y_des)/y_des)*100
 rise_time_y
 figure(1)
 plot(t, y)
+xlim([0,1])
 hold on;
 plot(t, z)
 hold on;
